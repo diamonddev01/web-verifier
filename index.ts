@@ -79,36 +79,6 @@ app.get('/sign_in', (request, response) => {
     }
 
     response.sendFile(resolve('./public/signed_in.html'));
-
-    /*
-    // CONFIRMED
-    // deno-lint-ignore no-explicit-any
-    const guild = (payload as unknown as any).guild_id
-    const gld = await client.guilds.get(guild).catch();
-    if(!gld) {
-        console.log('NO_GUILD');
-        return;
-    }
-
-    const member = await gld.members.get(id).catch();
-    if(!member) {
-        console.log('NO_MEMBER');
-        return;
-    }
-    const r = Deno.env.get('VERIFIED_ROLE');
-    if(!r) {
-        console.log('NO_ROLE');
-        return;
-    };
-    member.roles.add(r).catch();
-
-    const sChannel = Deno.env.get('SUCCESS_CHANNEL');
-    if(!sChannel) return;
-    const c = await gld.channels.get(sChannel).catch()
-    if(!c) return;
-    if(c.type !== ChannelTypes.GUILD_TEXT) return;
-    (c as GuildTextBasedChannel).send({content: 'Welcome ' + member.user.username}).catch();*/
-
     addRoles((payload as unknown as any).guild_id, id, Deno.env.get('VERIFIED_ROLE') as string);
 })
 
