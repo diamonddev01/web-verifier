@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERIFY</title>
+</head>
+<body>
+    <button onclick="buttonClick()">Login Required</button>
+    <script>
+        function buttonClick() {
+            const Http = new XMLHttpRequest();
+            const url = './auth/create_token';
+            Http.open("POST", url);
+            Http.setRequestHeader('Content-Type', 'application/json');
+            const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop)
+            });
+            Http.send(`{
+                "guild_id": "${params.guild_id}",
+                "auth_id": "${params.auth_id}"
+            }`);
+
+            function HttpReadyStateChange(e) {
+                if (Http.readyState === 4) {
+                    console.log(Http.status);
+                    console.log(Http.responseText);
+
+                    const response = Http.responseText;
+                    const date = new Date()
+                    date.setTime(date.getTime() + (60*60*1000));
+                    document.cookie = 'jwt=' + Http.responseText + ';expires=' + date.toUTCString() + ';path=/';
+                    window.location = "./prep_auth";
+                }
+            }
+
+            Http.onreadystatechange = HttpReadyStateChange;
+        }
+    </script>
+</body>
+</html>
